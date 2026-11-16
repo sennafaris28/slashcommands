@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build/editor cruft
+*.log
+.DS_Store
+.idea/
+.vscode/
+test/.build/
+
+# Local copies of the build used to deploy into a vault
+dist/
+
+# Keep main.js, manifest.json, styles.css tracked — they're the plugin.
