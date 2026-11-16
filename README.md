@@ -45,6 +45,10 @@ api?.insertTable(editor, 4, 6);        // 4 columns × 6 rows at the cursor
 
 Copy `main.js`, `manifest.json` and `styles.css` into `<vault>/.obsidian/plugins/slashcommands/`, then enable **SlashCommands** under Settings → Community plugins. (Or install from a GitHub repo with [BRAT](https://github.com/TfTHacker/obsidian42-brat).)
 
+**On iPad:** install [BRAT](https://github.com/TfTHacker/obsidian42-brat) from Community plugins, run
+**"BRAT: Add a beta plugin for testing"** and paste `sennafaris28/slashcommands`. Step-by-step instructions
+are in the [NoteBoard README](https://github.com/sennafaris28/noteboard#install-on-ipad-with-brat).
+
 ## Develop
 
 ```bash
