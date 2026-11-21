@@ -1,4 +1,4 @@
-import { App, Editor, EditorPosition, Modal, Setting } from "obsidian";
+import { App, Editor, EditorPosition, Modal, Platform, Setting } from "obsidian";
 import { placeBlock } from "./blocks";
 
 /** Largest table the picker / `/table 4x6` will make. */
@@ -47,6 +47,29 @@ export function clampTable(cols: number, rows: number): { cols: number; rows: nu
 class TableSizeModal extends Modal {
   constructor(app: App, private onPick: (cols: number, rows: number) => void) {
     super(app);
+    // iPad: keep the dialog above the on-screen keyboard (see styles.css).
+    this.containerEl.addClass("sc-kb-safe");
+  }
+
+  open(): void {
+    super.open();
+    // Measure the keyboard ourselves too, in case Obsidian's
+    // --keyboard-height isn't reported on this device.
+    const vv = window.visualViewport;
+    if (!Platform.isMobile || !vv) return;
+    const el = this.containerEl;
+    const update = () => {
+      if (!el.isConnected) {
+        vv.removeEventListener("resize", update);
+        vv.removeEventListener("scroll", update);
+        return;
+      }
+      const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      el.style.setProperty("--sc-kb", `${Math.round(kb)}px`);
+    };
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    update();
   }
 
   onOpen(): void {
