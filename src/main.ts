@@ -11,6 +11,8 @@ interface SlashSettings {
   tableInContextMenu: boolean;
   /** Language chip + dropdown on each code block. */
   codeLanguagePicker: boolean;
+  /** Guess and fill in the language of code blocks you type or paste into. */
+  autoDetectLanguage: boolean;
   /** Pasting a lone URL: ask (URL or page title), always the title, or plain URL. */
   pasteLinks: PasteLinkMode;
 }
@@ -19,6 +21,7 @@ const DEFAULT_SETTINGS: SlashSettings = {
   slashMenu: true,
   tableInContextMenu: true,
   codeLanguagePicker: true,
+  autoDetectLanguage: true,
   pasteLinks: "ask",
 };
 
@@ -60,7 +63,11 @@ export default class SlashCommandsPlugin extends Plugin {
     );
 
     // Language chip on each code block: pick a language instead of typing it after the backticks.
-    this.registerEditorExtension(codeLanguagePicker(() => this.settings.codeLanguagePicker));
+    this.registerEditorExtension(codeLanguagePicker(
+        this.app,
+        () => this.settings.codeLanguagePicker,
+        () => this.settings.autoDetectLanguage
+      ));
 
     // Paste a URL → keep it, or turn it into [Page title](url).
     this.registerEvent(
@@ -119,6 +126,20 @@ class SlashSettingTab extends PluginSettingTab {
           this.plugin.settings.codeLanguagePicker = v;
           await this.plugin.saveSettings();
           this.plugin.app.workspace.updateOptions(); // redraw open editors now
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Detect code block language")
+      .setDesc(
+        "Like VS Code: when you type or paste code into a block with no language, it guesses one and writes it " +
+          "after the ``` for you. Only blocks you're editing; opening a note never changes it. Ctrl/Cmd+Z takes a " +
+          "guess back, and picking Plain text keeps a block plain. Needs the language picker on."
+      )
+      .addToggle((t) =>
+        t.setValue(this.plugin.settings.autoDetectLanguage).onChange(async (v) => {
+          this.plugin.settings.autoDetectLanguage = v;
+          await this.plugin.saveSettings();
         })
       );
 

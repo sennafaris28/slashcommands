@@ -36,6 +36,14 @@ language and pick **Use "…"**. Choosing one simply writes it after the backtic
 so Obsidian's own syntax highlighting kicks in, and Ctrl/Cmd+Z undoes it. Works in Live Preview and Source mode.
 Code blocks inside callouts get the picker while you're editing the callout.
 
+**Language detection.** Like VS Code, it can tell what you typed. Type or paste code into a block with no
+language and, after a short pause, the language is written in for you (```` ``` ```` → ```` ```sql ````). It only
+looks at blocks you're editing, so opening an old note never changes it. Ctrl/Cmd+Z takes a guess back (and
+that block is then left alone), and picking **Plain text** writes ```` ```text ```` so it stays plain. When it isn't
+sure it leaves the block as it is. Blocks without a language also get a **(detected)** suggestion at the top of
+the picker. Detection runs on your device: [highlight.js](https://highlightjs.org/)'s auto-detect plus a few
+rules for short snippets (a lone `SELECT`, a `curl` command, a Python loop).
+
 ## Paste links as page titles
 
 Paste a lone URL and a small menu offers **Keep URL** or **Page title**, like Notion. Page title fetches the
@@ -49,6 +57,7 @@ selection is left to Obsidian. Only the page you pasted is contacted, and only w
 - **Slash menu** — on/off. Turn it off if you use Obsidian's core *Slash commands* plugin; both open on `/`.
 - **"Insert table…" in the right-click menu** — on/off.
 - **Code block language picker** — on/off.
+- **Detect code block language** — on/off (on by default; needs the picker).
 - **Pasted links** — Ask each time (default), Always page title, or Always keep URL.
 
 ## For other plugins
@@ -77,3 +86,7 @@ npm test        # logic tests against a fake editor
 ```
 
 The tests bundle the block logic against a stub of the `obsidian` module and run it in Node: conversions, placement, the trigger rules, filtering and tables.
+
+## Third-party code
+
+Language detection bundles [highlight.js](https://github.com/highlightjs/highlight.js) (BSD 3-Clause, © 2006 Ivan Sagalaev); its licence is reproduced at the top of `main.js`.

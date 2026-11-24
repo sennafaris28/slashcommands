@@ -132,6 +132,22 @@ export function fenceLine(f: Fence, lang: string): string {
   return f.prefix + f.marker + lang + (lang ? f.rest : f.rest.replace(/^\s+/, ""));
 }
 
+/** Whether the block has its closing fence (an unclosed one runs to the end of the note). */
+export function isClosed(lines: readonly string[], f: Fence): boolean {
+  if (f.end <= f.line) return false;
+  const close = lines[f.end]?.slice(f.prefix.length).trim() ?? "";
+  return close.length >= f.marker.length && close === f.marker[0].repeat(close.length);
+}
+
+/** The code between the fences, with any blockquote prefix taken off each line. */
+export function blockBody(lines: readonly string[], f: Fence): string {
+  const strip = f.prefix.replace(/\s+$/, "");
+  return lines
+    .slice(f.line + 1, isClosed(lines, f) ? f.end : f.end + 1)
+    .map((l) => (strip && l.startsWith(strip) ? l.slice(strip.length).replace(/^ /, "") : l))
+    .join("\n");
+}
+
 /** Whether 0-based `line` is inside a fenced code block (fence lines included). */
 export function inCodeBlock(lines: readonly string[], line: number): boolean {
   return findFences(lines, line + 1).some((f) => line >= f.line && line <= f.end);

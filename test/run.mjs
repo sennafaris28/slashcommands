@@ -13,3 +13,4 @@ await esbuild.build({
 execFileSync(process.execPath, ["test/slash.test.cjs"], { stdio: "inherit" });
 execFileSync(process.execPath, ["test/codelang.test.cjs"], { stdio: "inherit" });
 execFileSync(process.execPath, ["test/pastelink.test.cjs"], { stdio: "inherit" });
+execFileSync(process.execPath, ["test/detect.test.cjs"], { stdio: "inherit" });

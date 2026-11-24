@@ -4,3 +4,4 @@ export * from "../src/table";
 export * from "../src/blocks";
 export * from "../src/codelang";
 export * from "../src/pastelink";
+export * from "../src/codelang-detect";

@@ -1,6 +1,6 @@
 {
   "name": "slashcommands",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A Notion-style / menu for Obsidian notes: headings, to-do, lists, toggle, quote, divider, callout, code, tables and today's date.",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,13 @@
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "test": "node test/run.mjs"
   },
-  "keywords": ["obsidian", "slash", "notion", "slash-commands", "editor"],
+  "keywords": [
+    "obsidian",
+    "slash",
+    "notion",
+    "slash-commands",
+    "editor"
+  ],
   "author": "pizdec.tv",
   "license": "MIT",
   "devDependencies": {
@@ -18,5 +24,8 @@
     "obsidian": "latest",
     "tslib": "2.6.2",
     "typescript": "5.4.5"
+  },
+  "dependencies": {
+    "highlight.js": "11.12.0"
   }
 }
