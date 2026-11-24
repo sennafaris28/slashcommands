@@ -28,10 +28,19 @@ A Notion-style **`/` menu** for Obsidian notes. Type `/` at the start of a line 
 
 Also: **Insert table…** in the command palette and the editor's right-click menu.
 
+## Code block language picker
+
+Every code block shows its language on its first line (**Plain text ▾** when it has none). Click it for a
+searchable list (Python, Bash, SQL, YAML, TypeScript, Go…), use the arrow keys and Enter, or type any other
+language and pick **Use "…"**. Choosing one simply writes it after the backticks (```` ``` ```` → ```` ```python ````),
+so Obsidian's own syntax highlighting kicks in, and Ctrl/Cmd+Z undoes it. Works in Live Preview and Source mode.
+Code blocks inside callouts get the picker while you're editing the callout.
+
 ## Settings
 
 - **Slash menu** — on/off. Turn it off if you use Obsidian's core *Slash commands* plugin; both open on `/`.
 - **"Insert table…" in the right-click menu** — on/off.
+- **Code block language picker** — on/off.
 
 ## For other plugins
 

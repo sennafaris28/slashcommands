@@ -2,3 +2,4 @@
 export * from "../src/slash";
 export * from "../src/table";
 export * from "../src/blocks";
+export * from "../src/codelang";

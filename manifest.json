@@ -1,9 +1,9 @@
 {
   "id": "slashcommands",
   "name": "SlashCommands",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minAppVersion": "1.4.0",
-  "description": "A Notion-style / menu for notes: headings, to-do, lists, toggle, quote, divider, callout, code, tables and today's date.",
+  "description": "A Notion-style / menu for notes: headings, to-do, lists, toggle, quote, divider, callout, code, tables and today's date, plus a language picker on code blocks.",
   "author": "pizdec.tv",
   "isDesktopOnly": false
 }

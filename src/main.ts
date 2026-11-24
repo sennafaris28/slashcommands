@@ -1,17 +1,21 @@
 import { Editor, Plugin, PluginSettingTab, Setting } from "obsidian";
 import { SlashSuggest } from "./slash";
 import { insertTable, openTablePicker } from "./table";
+import { codeLanguagePicker } from "./codelang-view";
 
 interface SlashSettings {
   /** The "/" menu itself. */
   slashMenu: boolean;
   /** "Insert table…" in the editor's right-click menu. */
   tableInContextMenu: boolean;
+  /** Language chip + dropdown on each code block. */
+  codeLanguagePicker: boolean;
 }
 
 const DEFAULT_SETTINGS: SlashSettings = {
   slashMenu: true,
   tableInContextMenu: true,
+  codeLanguagePicker: true,
 };
 
 /** What other plugins can call: `app.plugins.plugins.slashcommands.api`. */
@@ -51,6 +55,9 @@ export default class SlashCommandsPlugin extends Plugin {
       })
     );
 
+    // Language chip on each code block: pick a language instead of typing it after the backticks.
+    this.registerEditorExtension(codeLanguagePicker(() => this.settings.codeLanguagePicker));
+
     this.addSettingTab(new SlashSettingTab(this));
   }
 
@@ -89,6 +96,20 @@ class SlashSettingTab extends PluginSettingTab {
         t.setValue(this.plugin.settings.tableInContextMenu).onChange(async (v) => {
           this.plugin.settings.tableInContextMenu = v;
           await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Code block language picker")
+      .setDesc(
+        "Shows the language on each code block's first line; click it to pick one from a searchable list " +
+          "instead of typing it after the backticks. Choosing a language just writes it after the ``` for you."
+      )
+      .addToggle((t) =>
+        t.setValue(this.plugin.settings.codeLanguagePicker).onChange(async (v) => {
+          this.plugin.settings.codeLanguagePicker = v;
+          await this.plugin.saveSettings();
+          this.plugin.app.workspace.updateOptions(); // redraw open editors now
         })
       );
 

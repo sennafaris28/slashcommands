@@ -11,3 +11,4 @@ await esbuild.build({
   logLevel: "error",
 });
 execFileSync(process.execPath, ["test/slash.test.cjs"], { stdio: "inherit" });
+execFileSync(process.execPath, ["test/codelang.test.cjs"], { stdio: "inherit" });
