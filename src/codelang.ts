@@ -86,6 +86,8 @@ export interface Fence {
   lang: string;
   /** Anything after the language (e.g. ` title="x"`), kept when the language changes. */
   rest: string;
+  /** Last line of the block: its closing fence, or the last scanned line if unclosed. */
+  end: number;
 }
 
 // Up to 3 spaces of indent, optionally inside blockquotes / callouts.
@@ -106,8 +108,10 @@ export function findFences(lines: readonly string[], upTo = lines.length): Fence
     if (open) {
       if (m && m[2][0] === open.marker[0] && m[2].length >= open.marker.length && m[3].trim() === "" &&
           quoteDepth(m[1]) === open.quote) {
+        out[out.length - 1].end = i;
         open = null;
       } else if (open.quote > 0 && quoteDepth(lines[i].match(/^(?:[ ]{0,3}>[ ]?)*/)![0]) < open.quote) {
+        out[out.length - 1].end = i - 1;
         open = null; // the blockquote / callout ended, so did the block inside it
       }
       continue;
@@ -117,7 +121,7 @@ export function findFences(lines: readonly string[], upTo = lines.length): Fence
     if (m[2][0] === "`" && info.includes("`")) continue; // inline code, not a fence
     const lead = /^\s*/.exec(info)![0];
     const word = /^\S*/.exec(info.slice(lead.length))![0];
-    out.push({ line: i, prefix: m[1], marker: m[2], lang: word, rest: info.slice(lead.length + word.length) });
+    out.push({ line: i, prefix: m[1], marker: m[2], lang: word, rest: info.slice(lead.length + word.length), end: Math.min(upTo, lines.length) - 1 });
     open = { marker: m[2], quote: quoteDepth(m[1]) };
   }
   return out;
@@ -126,4 +130,9 @@ export function findFences(lines: readonly string[], upTo = lines.length): Fence
 /** The fence line with its language set to `lang` ("" removes it). */
 export function fenceLine(f: Fence, lang: string): string {
   return f.prefix + f.marker + lang + (lang ? f.rest : f.rest.replace(/^\s+/, ""));
+}
+
+/** Whether 0-based `line` is inside a fenced code block (fence lines included). */
+export function inCodeBlock(lines: readonly string[], line: number): boolean {
+  return findFences(lines, line + 1).some((f) => line >= f.line && line <= f.end);
 }

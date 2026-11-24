@@ -2,6 +2,7 @@ import { Editor, Plugin, PluginSettingTab, Setting } from "obsidian";
 import { SlashSuggest } from "./slash";
 import { insertTable, openTablePicker } from "./table";
 import { codeLanguagePicker } from "./codelang-view";
+import { handlePaste, PasteLinkMode } from "./pastelink-view";
 
 interface SlashSettings {
   /** The "/" menu itself. */
@@ -10,12 +11,15 @@ interface SlashSettings {
   tableInContextMenu: boolean;
   /** Language chip + dropdown on each code block. */
   codeLanguagePicker: boolean;
+  /** Pasting a lone URL: ask (URL or page title), always the title, or plain URL. */
+  pasteLinks: PasteLinkMode;
 }
 
 const DEFAULT_SETTINGS: SlashSettings = {
   slashMenu: true,
   tableInContextMenu: true,
   codeLanguagePicker: true,
+  pasteLinks: "ask",
 };
 
 /** What other plugins can call: `app.plugins.plugins.slashcommands.api`. */
@@ -57,6 +61,11 @@ export default class SlashCommandsPlugin extends Plugin {
 
     // Language chip on each code block: pick a language instead of typing it after the backticks.
     this.registerEditorExtension(codeLanguagePicker(() => this.settings.codeLanguagePicker));
+
+    // Paste a URL → keep it, or turn it into [Page title](url).
+    this.registerEvent(
+      this.app.workspace.on("editor-paste", (evt, editor) => handlePaste(this.app, evt, editor, this.settings.pasteLinks))
+    );
 
     this.addSettingTab(new SlashSettingTab(this));
   }
@@ -111,6 +120,23 @@ class SlashSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
           this.plugin.app.workspace.updateOptions(); // redraw open editors now
         })
+      );
+
+    new Setting(containerEl)
+      .setName("Pasted links")
+      .setDesc(
+        "When you paste a lone URL. Ask: a small menu offers Keep URL or Page title. " +
+          "Page title fetches the page and writes [Its title](url). Only the page you pasted is contacted, " +
+          "and only when a title is wanted. Code, inline code, frontmatter and hand-written links are left alone."
+      )
+      .addDropdown((d) =>
+        d
+          .addOptions({ ask: "Ask each time", title: "Always page title", url: "Always keep URL" })
+          .setValue(this.plugin.settings.pasteLinks)
+          .onChange(async (v) => {
+            this.plugin.settings.pasteLinks = v as PasteLinkMode;
+            await this.plugin.saveSettings();
+          })
       );
 
     containerEl.createEl("p", {

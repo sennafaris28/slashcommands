@@ -36,11 +36,20 @@ language and pick **Use "…"**. Choosing one simply writes it after the backtic
 so Obsidian's own syntax highlighting kicks in, and Ctrl/Cmd+Z undoes it. Works in Live Preview and Source mode.
 Code blocks inside callouts get the picker while you're editing the callout.
 
+## Paste links as page titles
+
+Paste a lone URL and a small menu offers **Keep URL** or **Page title**, like Notion. Page title fetches the
+page and turns the URL into `[Its title](url)` (from the page's `og:title`, else its `<title>`). Keep typing
+and the menu gets out of the way; arrows + Enter pick from it. Pasting inside code, inline code,
+frontmatter or a link you're writing by hand (`](`, `<`, `[[`) always stays a plain URL, and pasting over a
+selection is left to Obsidian. Only the page you pasted is contacted, and only when you ask for its title.
+
 ## Settings
 
 - **Slash menu** — on/off. Turn it off if you use Obsidian's core *Slash commands* plugin; both open on `/`.
 - **"Insert table…" in the right-click menu** — on/off.
 - **Code block language picker** — on/off.
+- **Pasted links** — Ask each time (default), Always page title, or Always keep URL.
 
 ## For other plugins
 
